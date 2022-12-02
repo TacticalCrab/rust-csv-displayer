@@ -50,7 +50,7 @@ impl ReaderResult {
             headers_len = headers_data.len();
 
             for field in headers_data {
-                sizes.push(field.len());
+                sizes.push(field.chars().count());
             }
         } else {
             return Ok(());
@@ -66,8 +66,9 @@ impl ReaderResult {
             }
 
             for (i, field) in row.iter().enumerate() {
-                if field.len() > sizes[i] {
-                    sizes[i] = field.len();
+                let field_len = field.chars().count();
+                if field_len > sizes[i] {
+                    sizes[i] = field_len;
                 }
             }
         }
@@ -87,7 +88,7 @@ impl ReaderResult {
                 header_middle.push_str(&format!(" {field_cp} |"))
             }
 
-            for _ in 0..header_middle.len() {
+            for _ in 0..header_middle.chars().count() {
                 header_top_line.push('-');
                 header_bottom_line.push('-');
             }
@@ -107,7 +108,7 @@ impl ReaderResult {
                 row_middle.push_str(&format!(" {field_cp} |"))
             }
 
-            for _ in 0..row_middle.len() {
+            for _ in 0..row_middle.chars().count() {
                 row_bottom_line.push('-');
             }
 
@@ -137,7 +138,7 @@ impl CSVReader {
                 Ok(_) => {
                     let data = file_result
                         .split("\n")
-                        .filter(|row| row.trim().len() != 0)
+                        .filter(|row| row.trim().chars().count() != 0)
                         .map(|row| {
                             row.split(",")
                                 .map(|row_value| row_value.to_string())
